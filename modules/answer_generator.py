@@ -7,9 +7,15 @@ def generate_answer(question, context_chunks, model_name="google/flan-t5-small")
     context = " ".join(context_chunks)
 
    
-    prompt = f"Answer the question based on the context below:\n\nContext: {context}\n\nQuestion: {question}\nAnswer:"
+    prompt = f"""Answer the question based on the context below.
+        Be **concise** and give only the necessary information.
 
-    
+        Context: {context}
+
+        Question: {question}
+        Answer:"""
+
+        
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 

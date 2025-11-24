@@ -1,15 +1,13 @@
 from PyPDF2 import PdfReader
 
-def extract_text_from_pdf(pdf_path):
+def extract_text_from_pdf(pdf_file):
+    reader = PdfReader(pdf_file) 
     text = ""
 
-    with open(pdf_path, "rb") as file:
-        reader = PdfReader(file)
-
-        for i in range(len(reader.pages)):
-            page = reader.pages[i]
-            page_text = page.extract_text()
-            if page_text:         # avoid None
-                text += page_text
+    for i in range(len(reader.pages)):
+        page = reader.pages[i]
+        page_text = page.extract_text()
+        if page_text:
+            text += page_text + "\n"
 
     return text
