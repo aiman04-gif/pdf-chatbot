@@ -6,10 +6,11 @@
 `pip install langchain`\
 `pip install sentence-transformers`\
 `pip install faiss-cpu`\
-`pip install PyPDF2`\
+`pip install PyPDF2`
 
 ## Step 02 - PDF Loading + Text Extraction
 PDF loaded using PyPDF2 the text extracted and stored.
+
 **[see modules/pdf_loader.py]**
 
 ## Step 03 - Chunking
