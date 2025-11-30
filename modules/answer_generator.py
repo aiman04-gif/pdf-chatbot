@@ -1,28 +1,46 @@
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
+from groq import Groq
+from dotenv import load_dotenv
+import os
 
-def generate_answer(question, context_chunks, model_name="google/flan-t5-small"):
+load_dotenv()  # Load .env file
+
+api_key = os.getenv("GROQ_API_KEY")
+
+client = Groq(api_key=api_key)
+
+def generate_answer(question, context_chunks, model_name="llama-3.1-8b-instant"):
     """
-    Generate an answer to the question using the context chunks.
+    Generate a concise answer using Groq LLM + retrieved context.
     """
+
     context = " ".join(context_chunks)
 
-   
-    prompt = f"""Answer the question based on the context below.
-        Be **concise** and give only the necessary information.
+    prompt = f"""
+        You are an academic assistant answering questions from a PDF.
 
-        Context: {context}
+        Guidelines:
+        - Answer using the context.
+        - Provide short, precise answers.
+        - If multiple points exist, summarize them.
+        - If the answer is not explicitly in the context, respond: "Not mentioned in the provided document."
+
+        Context:
+        {context}
 
         Question: {question}
-        Answer:"""
 
-        
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+        Answer:
 
-    
-    nlp = pipeline("text2text-generation", model=model, tokenizer=tokenizer)
 
-    
-    result = nlp(prompt, max_length=200, do_sample=False)
+"""
 
-    return result[0]['generated_text']
+    completion = client.chat.completions.create(
+        model=model_name,
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.0,
+        max_tokens=300,
+    )
+
+    return completion.choices[0].message.content
